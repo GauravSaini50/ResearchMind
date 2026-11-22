@@ -1,0 +1,790 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Research Mind | AI Research Assistant</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Markdown renderer and HTML sanitizer -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f5f7fb;
+            color: #202938;
+        }
+
+        header {
+            background: white;
+            padding: 18px 6%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .logo {
+            font-size: 23px;
+            font-weight: 800;
+            color: #5145cd;
+        }
+
+        .logo span {
+            color: #202938;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 55px 20px 35px;
+        }
+
+        .hero h1 {
+            font-size: 36px;
+            margin-bottom: 12px;
+        }
+
+        .hero p {
+            color: #697386;
+            line-height: 1.7;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: auto;
+            padding-bottom: 60px;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+        }
+
+        .card h2 {
+            font-size: 20px;
+            margin-bottom: 18px;
+        }
+
+        .muted {
+            color: #778196;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d8dce5;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 14px;
+            margin-bottom: 12px;
+            background: white;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 85px;
+        }
+
+        button {
+            background: #5145cd;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 20px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        button:hover {
+            background: #4035ad;
+        }
+
+        button:disabled {
+            opacity: 0.55;
+            cursor: not-allowed;
+        }
+
+        .secondary {
+            background: #eef0ff;
+            color: #5145cd;
+        }
+
+        .secondary:hover {
+            background: #e1e3ff;
+        }
+
+        .paper-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 13px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .paper-item input {
+            width: auto;
+            margin-top: 3px;
+        }
+
+        .paper-item label {
+            font-size: 14px;
+            line-height: 1.5;
+            cursor: pointer;
+        }
+
+        .paper-item small {
+            display: block;
+            color: #8992a3;
+            margin-top: 4px;
+        }
+
+        .button-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .status {
+            margin-top: 12px;
+            font-size: 14px;
+            color: #5145cd;
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            background: #fafaff;
+            border: 1px solid #e6e5fa;
+            border-radius: 10px;
+            min-height: 50px;
+        }
+
+        /* Markdown formatting for ALL AI responses */
+        .ai-response {
+            line-height: 1.8;
+            overflow-wrap: anywhere;
+            color: #30394a;
+        }
+
+        .ai-response h1,
+        .ai-response h2,
+        .ai-response h3,
+        .ai-response h4 {
+            margin: 22px 0 12px;
+            color: #252b3a;
+            line-height: 1.4;
+        }
+
+        .ai-response h1 { font-size: 25px; }
+        .ai-response h2 { font-size: 21px; }
+        .ai-response h3 { font-size: 18px; }
+        .ai-response h4 { font-size: 16px; }
+
+        .ai-response p {
+            margin: 10px 0;
+        }
+
+        .ai-response ul,
+        .ai-response ol {
+            padding-left: 25px;
+            margin: 12px 0;
+        }
+
+        .ai-response li {
+            margin-bottom: 7px;
+        }
+
+        .ai-response strong {
+            color: #222b3c;
+            font-weight: 700;
+        }
+
+        .ai-response blockquote {
+            border-left: 4px solid #5145cd;
+            padding: 10px 15px;
+            margin: 15px 0;
+            background: #f0efff;
+        }
+
+        .ai-response hr {
+            border: none;
+            border-top: 1px solid #ddd;
+            margin: 20px 0;
+        }
+
+        .ai-response table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            display: block;
+            overflow-x: auto;
+        }
+
+        .ai-response th,
+        .ai-response td {
+            border: 1px solid #dfe2e8;
+            padding: 11px;
+            text-align: left;
+            min-width: 110px;
+        }
+
+        .ai-response th {
+            background: #eeedff;
+            font-weight: 700;
+        }
+
+        .ai-response tr:nth-child(even) {
+            background: #f8f8fc;
+        }
+
+        .ai-response pre {
+            background: #202938;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+
+        .ai-response code {
+            background: #ececf5;
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+
+        .ai-response pre code {
+            background: transparent;
+            padding: 0;
+        }
+
+        /* Chat */
+        .chat-box {
+            height: 380px;
+            overflow-y: auto;
+            padding: 15px;
+            background: #fafaff;
+            border: 1px solid #e6e5fa;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .chat-message {
+            padding: 13px 16px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            max-width: 90%;
+            line-height: 1.6;
+        }
+
+        .user-message {
+            background: #5145cd;
+            color: white;
+            margin-left: auto;
+            white-space: pre-wrap;
+        }
+
+        .bot-message {
+            background: #f0efff;
+            color: #30394a;
+            margin-right: auto;
+            width: 95%;
+        }
+
+        .bot-message .ai-response {
+            color: #30394a;
+        }
+
+        .chat-input-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input-row textarea {
+            margin: 0;
+            min-height: 48px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: #8992a3;
+            font-size: 13px;
+        }
+
+        @media(max-width: 650px) {
+            .hero h1 { font-size: 27px; }
+            .container { width: 94%; }
+            .card { padding: 17px; }
+            .chat-input-row { flex-direction: column; }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">Research <span>Mind.</span></div>
+    <div>AI Research Assistant</div>
+</header>
+
+<section class="hero">
+    <h1>Your Research, Simplified.</h1>
+    <p>Upload research papers, generate summaries, compare studies and ask questions using AI.</p>
+</section>
+
+<main class="container">
+
+    <!-- PDF UPLOAD -->
+    <section class="card">
+        <h2>1. Upload Research Papers</h2>
+        <p class="muted">Upload one or multiple PDF research papers.</p>
+
+        <input type="file" id="pdfFile" accept=".pdf" multiple>
+
+        <button id="uploadButton" onclick="uploadPapers()">Upload Papers</button>
+
+        <p class="status" id="uploadStatus"></p>
+    </section>
+
+    <!-- PAPER LIBRARY -->
+    <section class="card">
+        <h2>2. Your Research Library</h2>
+        <p class="muted">Select papers to use for comparison and chatbot questions.</p>
+
+        <div class="button-row">
+            <button class="secondary" onclick="loadPapers()">Refresh Papers</button>
+            <button class="secondary" onclick="selectAllPapers(true)">Select All</button>
+            <button class="secondary" onclick="selectAllPapers(false)">Deselect All</button>
+        </div>
+
+        <div id="paperList" style="margin-top:18px;">
+            No papers uploaded yet.
+        </div>
+
+        <p class="muted" id="paperCount"></p>
+    </section>
+
+    <!-- SUMMARY -->
+    <section class="card">
+        <h2>3. Generate Research Summary</h2>
+        <p class="muted">Choose a paper and topic to generate an AI-powered summary.</p>
+
+        <label for="paperSelect">Select Research Paper</label>
+        <select id="paperSelect">
+            <option value="">Select a paper</option>
+        </select>
+
+        <label for="topicSelect">Select Topic</label>
+        <select id="topicSelect">
+            <option value="">Select a topic</option>
+        </select>
+
+        <button id="summaryButton" onclick="generateSummary()">Generate Summary</button>
+
+        <div class="result">
+            <div id="summaryContent" class="ai-response">
+                Your generated summary will appear here.
+            </div>
+        </div>
+    </section>
+
+    <!-- COMPARE -->
+    <section class="card">
+        <h2>4. Compare Research Papers</h2>
+        <p class="muted">Select at least two papers in your Research Library to compare them.</p>
+
+        <button id="compareButton" onclick="comparePapers()">Compare Selected Papers</button>
+
+        <div class="result">
+            <div id="comparisonContent" class="ai-response">
+                Your paper comparison will appear here.
+            </div>
+        </div>
+    </section>
+
+    <!-- CHATBOT -->
+    <section class="card">
+        <h2>5. Ask Research Mind</h2>
+        <p class="muted">Ask questions about your uploaded research papers. Select papers above to restrict the chatbot to those papers. If none are selected, all papers will be used.</p>
+
+        <div class="chat-box" id="chatBox">
+            <div class="chat-message bot-message">
+                Hello! I am Research Mind. Ask me anything about your uploaded research papers.
+            </div>
+        </div>
+
+        <div class="chat-input-row">
+            <textarea id="chatInput" placeholder="Ask a question about your research papers..."></textarea>
+            <button id="sendButton" onclick="sendMessage()">Send</button>
+        </div>
+    </section>
+
+</main>
+
+<footer>
+    Research Mind | AI-Powered Research Assistant
+</footer>
+
+<script>
+    let papers = [];
+
+    // COMMON MARKDOWN RENDERER FOR SUMMARY, COMPARE AND CHATBOT
+    function renderMarkdown(content) {
+        if (!content) return "";
+
+        const html = marked.parse(String(content), {
+            gfm: true,
+            breaks: true
+        });
+
+        return DOMPurify.sanitize(html);
+    }
+
+    // GET SELECTED PAPER IDS
+    function getSelectedPaperIds() {
+        return Array.from(
+            document.querySelectorAll(".paper-checkbox:checked")
+        ).map(checkbox => checkbox.value);
+    }
+
+    // UPLOAD PAPERS
+    async function uploadPapers() {
+        const fileInput = document.getElementById("pdfFile");
+        const files = fileInput.files;
+        const status = document.getElementById("uploadStatus");
+        const button = document.getElementById("uploadButton");
+
+        if (!files.length) {
+            status.textContent = "Please select at least one PDF.";
+            return;
+        }
+
+        const formData = new FormData();
+
+        for (const file of files) {
+            formData.append("files", file);
+        }
+
+        button.disabled = true;
+        status.textContent = "Uploading and processing papers...";
+
+        try {
+            const response = await fetch("/upload", {
+                method: "POST",
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || "Upload failed.");
+            }
+
+            status.textContent = data.message || "Upload completed successfully.";
+
+            fileInput.value = "";
+            await loadPapers();
+
+        } catch (error) {
+            status.textContent = "Error: " + error.message;
+        } finally {
+            button.disabled = false;
+        }
+    }
+
+    // LOAD PAPERS
+    async function loadPapers() {
+        const paperList = document.getElementById("paperList");
+        const paperSelect = document.getElementById("paperSelect");
+
+        try {
+            const response = await fetch("/papers");
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || "Could not load papers.");
+            }
+
+            papers = data.papers || [];
+
+            paperList.innerHTML = "";
+            paperSelect.innerHTML = '<option value="">Select a paper</option>';
+
+            if (papers.length === 0) {
+                paperList.textContent = "No papers uploaded yet.";
+            }
+
+            papers.forEach(paper => {
+                const item = document.createElement("div");
+                item.className = "paper-item";
+
+                const checkbox = document.createElement("input");
+                checkbox.type = "checkbox";
+                checkbox.className = "paper-checkbox";
+                checkbox.value = paper.id;
+                checkbox.id = "paper-" + paper.id;
+
+                const label = document.createElement("label");
+                label.htmlFor = checkbox.id;
+
+                const name = document.createElement("strong");
+                name.textContent = paper.filename || "Research Paper";
+
+                const topics = document.createElement("small");
+                topics.textContent = "Topics: " +
+                    (paper.topics || []).map(topic =>
+                        typeof topic === "string" ? topic : topic.title || topic.name || ""
+                    ).filter(Boolean).join(", ");
+
+                label.appendChild(name);
+                label.appendChild(topics);
+
+                item.appendChild(checkbox);
+                item.appendChild(label);
+                paperList.appendChild(item);
+
+                const option = document.createElement("option");
+                option.value = paper.id;
+                option.textContent = paper.filename || "Research Paper";
+                paperSelect.appendChild(option);
+            });
+
+            document.getElementById("paperCount").textContent =
+                papers.length + " paper(s) uploaded.";
+
+            updateTopics();
+
+        } catch (error) {
+            paperList.textContent = "Error loading papers: " + error.message;
+        }
+    }
+
+    // SELECT ALL OR DESELECT ALL
+    function selectAllPapers(checked) {
+        document.querySelectorAll(".paper-checkbox").forEach(checkbox => {
+            checkbox.checked = checked;
+        });
+    }
+
+    // UPDATE TOPICS WHEN PAPER CHANGES
+    function updateTopics() {
+        const paperId = document.getElementById("paperSelect").value;
+        const topicSelect = document.getElementById("topicSelect");
+
+        topicSelect.innerHTML = '<option value="">Select a topic</option>';
+
+        const selectedPaper = papers.find(
+            paper => String(paper.id) === String(paperId)
+        );
+
+        if (!selectedPaper) return;
+
+        (selectedPaper.topics || []).forEach(topic => {
+            const topicValue = typeof topic === "string"
+                ? topic
+                : topic.title || topic.name || "";
+
+            if (!topicValue) return;
+
+            const option = document.createElement("option");
+            option.value = topicValue;
+            option.textContent = topicValue;
+            topicSelect.appendChild(option);
+        });
+    }
+
+    document.getElementById("paperSelect").addEventListener(
+        "change", updateTopics
+    );
+
+    // GENERATE SUMMARY
+    async function generateSummary() {
+        const paperId = document.getElementById("paperSelect").value;
+        const topic = document.getElementById("topicSelect").value;
+        const output = document.getElementById("summaryContent");
+        const button = document.getElementById("summaryButton");
+
+        if (!paperId || !topic) {
+            output.textContent = "Please select a paper and topic.";
+            return;
+        }
+
+        button.disabled = true;
+        output.textContent = "Generating summary...";
+
+        try {
+            const response = await fetch("/summary", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    paper_id: paperId,
+                    topic: topic
+                })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || "Summary generation failed.");
+            }
+
+            output.innerHTML = renderMarkdown(data.summary);
+
+        } catch (error) {
+            output.textContent = "Error: " + error.message;
+        } finally {
+            button.disabled = false;
+        }
+    }
+
+    // COMPARE PAPERS
+    async function comparePapers() {
+        const paperIds = getSelectedPaperIds();
+        const output = document.getElementById("comparisonContent");
+        const button = document.getElementById("compareButton");
+
+        if (paperIds.length < 2) {
+            output.textContent = "Please select at least two papers to compare.";
+            return;
+        }
+
+        button.disabled = true;
+        output.textContent = "Comparing research papers...";
+
+        try {
+            const response = await fetch("/compare", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    paper_ids: paperIds
+                })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || "Comparison failed.");
+            }
+
+            output.innerHTML = renderMarkdown(data.comparison);
+
+        } catch (error) {
+            output.textContent = "Error: " + error.message;
+        } finally {
+            button.disabled = false;
+        }
+    }
+
+    // ADD CHAT MESSAGE
+    function addChatMessage(content, type, isMarkdown = false) {
+        const chatBox = document.getElementById("chatBox");
+
+        const message = document.createElement("div");
+        message.className = "chat-message " +
+            (type === "user" ? "user-message" : "bot-message");
+
+        if (isMarkdown) {
+            const responseContent = document.createElement("div");
+            responseContent.className = "ai-response";
+            responseContent.innerHTML = renderMarkdown(content);
+            message.appendChild(responseContent);
+        } else {
+            message.textContent = content;
+        }
+
+        chatBox.appendChild(message);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    // CHATBOT
+    async function sendMessage() {
+        const input = document.getElementById("chatInput");
+        const button = document.getElementById("sendButton");
+        const message = input.value.trim();
+
+        if (!message) return;
+
+        addChatMessage(message, "user");
+        input.value = "";
+
+        button.disabled = true;
+
+        const loadingMessage = document.createElement("div");
+        loadingMessage.className = "chat-message bot-message";
+        loadingMessage.textContent = "Research Mind is thinking...";
+        document.getElementById("chatBox").appendChild(loadingMessage);
+
+        try {
+            const response = await fetch("/chat", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    message: message,
+                    paper_ids: getSelectedPaperIds()
+                })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || "Chat request failed.");
+            }
+
+            loadingMessage.remove();
+
+            addChatMessage(
+                data.response || "No response received.",
+                "bot",
+                true
+            );
+
+        } catch (error) {
+            loadingMessage.textContent = "Error: " + error.message;
+        } finally {
+            button.disabled = false;
+            input.focus();
+        }
+    }
+
+    // SEND CHAT MESSAGE WITH ENTER
+    document.getElementById("chatInput").addEventListener("keydown", function(event) {
+        if (event.key === "Enter" && !event.shiftKey) {
+            event.preventDefault();
+            sendMessage();
+        }
+    });
+
+    // INITIAL LOAD
+    document.addEventListener("DOMContentLoaded", loadPapers);
+</script>
+
+</body>
+</html>

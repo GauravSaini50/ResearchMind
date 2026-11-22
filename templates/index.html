@@ -1,0 +1,1299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Research Mind | AI Research Assistant</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+
+
+        :root {
+            --ink: #17172f;
+            --muted: #8586a3;
+            --line: #e8e7f4;
+            --violet: #8067ff;
+            --violet2: #b49aff;
+            --cyan: #69e4ed;
+            --paper: #fff;
+            --bg: #f7f7fc;
+            --shadow: 0 18px 55px rgba(37, 28, 91, .09);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+
+
+
+
+    header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 25px;
+    }
+
+    /* Navigation container */
+    header nav,
+    header .nav-links {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 28px;
+    }
+
+    /* Navigation links */
+    header nav a,
+    header .nav-links a {
+        text-decoration: none;
+        color: #39345e;
+        font-size: 13px;
+        font-weight: 650;
+        padding: 9px 0;
+        position: relative;
+        transition: color .3s ease;
+    }
+
+    /* Hover effect */
+    header nav a:hover,
+    header .nav-links a:hover {
+        color: #8067ff;
+    }
+
+    /* Animated underline */
+    header nav a::after,
+    header .nav-links a::after {
+        content: "";
+        position: absolute;
+        bottom: 2px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: linear-gradient(90deg, #8067ff, #69e4ed);
+        border-radius: 5px;
+        transition: width .3s ease;
+    }
+
+    header nav a:hover::after,
+    header .nav-links a:hover::after {
+        width: 100%;
+    }
+
+    /* Mobile navbar */
+    @media (max-width: 650px) {
+        header {
+            height: auto;
+            min-height: 65px;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 12px 5%;
+            gap: 12px;
+        }
+
+        header nav,
+        header .nav-links {
+            width: 100%;
+            gap: 17px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        header nav a,
+        header .nav-links a {
+            font-size: 11px;
+        }
+    }
+
+
+        /* 2. BODY */
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            font-size: 14px;
+            line-height: 1.65;
+            overflow-x: hidden;
+        }
+
+        /* 3. HEADER & LOGO */
+        header {
+            height: 76px;
+            padding: 0 max(5%, calc((100% - 1200px) / 2));
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(255, 255, 255, .88);
+            backdrop-filter: blur(18px);
+            border-bottom: 1px solid rgba(224, 220, 248, .8);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            box-shadow: 0 5px 25px rgba(34, 24, 91, .04);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            color: #262044;
+        }
+
+        .logo:before {
+            content: '✦';
+            display: grid;
+            place-items: center;
+            width: 39px;
+            height: 39px;
+            border-radius: 13px;
+            color: white;
+            font-size: 22px;
+            background: linear-gradient(135deg, #9c78ff, #6252dc 60%, #36c9dc);
+            box-shadow: 0 7px 22px #7860e866;
+            animation: logoPulse 3s ease-in-out infinite;
+            position: relative;
+        }
+
+        .logo span {
+            color: #8067ff;
+        }
+
+        header > div:last-child {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: .4px;
+            color: #6d62a7;
+            background: #f1eeff;
+            border: 1px solid #e4ddff;
+            border-radius: 30px;
+            padding: 8px 15px;
+        }
+
+        /* 4. HERO SECTION */
+        .hero {
+            position: relative;
+            isolation: isolate;
+            overflow: hidden;
+            text-align: center;
+            padding: 95px 20px 86px;
+            color: white;
+            background:
+                radial-gradient(ellipse at 50% 120%, #40317f 0%, transparent 48%),
+                linear-gradient(125deg, #17152f 0%, #25204f 48%, #171a3d 100%);
+        }
+
+        .hero:before {
+            content: '';
+            position: absolute;
+            z-index: -1;
+            width: 540px;
+            height: 540px;
+            left: 50%;
+            top: -370px;
+            transform: translateX(-50%);
+            border: 1px solid #9c8bff55;
+            border-radius: 50%;
+            box-shadow:
+                0 0 0 45px #9c8bff0b,
+                0 0 0 95px #9c8bff09,
+                0 0 100px #8067ff33;
+            animation: orbit 24s linear infinite;
+        }
+
+        .hero:after {
+            content: '✧     ·      ✦        ·       ✧';
+            white-space: pre;
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            color: #b6a7ff55;
+            font-size: 28px;
+            letter-spacing: 24px;
+            pointer-events: none;
+            animation: twinkle 5s ease-in-out infinite;
+        }
+
+        .hero h1 {
+            position: relative;
+            z-index: 1;
+            font-size: clamp(35px, 5vw, 58px);
+            font-weight: 800;
+            letter-spacing: -2.5px;
+            line-height: 1.13;
+            margin-bottom: 20px;
+            animation: rise .9s both;
+        }
+
+        .hero h1:after {
+            content: '';
+            display: block;
+            width: 90px;
+            height: 4px;
+            margin: 22px auto 0;
+            border-radius: 5px;
+            background: linear-gradient(90deg, var(--violet), var(--cyan));
+            box-shadow: 0 0 22px #8e7aff;
+            animation: barGlow 3s ease-in-out infinite;
+        }
+
+        .hero p {
+            position: relative;
+            z-index: 1;
+            max-width: 670px;
+            margin: auto;
+            color: #c5c2e4;
+            font-size: 14px;
+            line-height: 1.9;
+            animation: rise 1.1s .12s both;
+        }
+
+        /* 5. MAIN CONTAINER & CARDS */
+        .container {
+            width: min(91%, 1160px);
+            margin: auto;
+            padding: 18px 0 75px;
+        }
+
+        .card {
+            position: relative;
+            background: var(--paper);
+            border: 1px solid var(--line);
+            border-radius: 20px;
+            padding: 28px 30px;
+            margin: 25px 0;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            animation: rise .7s both;
+            transition: transform .3s, box-shadow .3s, border-color .3s;
+        }
+
+        .card:nth-child(2) {
+            animation-delay: .08s;
+        }
+
+        .card:nth-child(3) {
+            animation-delay: .16s;
+        }
+
+        .card:nth-child(4) {
+            animation-delay: .24s;
+        }
+
+        .card:nth-child(5) {
+            animation-delay: .32s;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            border-color: #d7ceff;
+            box-shadow: 0 24px 65px rgba(66, 47, 150, .13);
+        }
+
+        .card h2 {
+            font-size: 18px;
+            letter-spacing: -.4px;
+            margin-bottom: 8px;
+            font-weight: 800;
+            color: #242044;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .card h2:before {
+            content: '✦';
+            display: grid;
+            place-items: center;
+            flex: 0 0 31px;
+            height: 31px;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 13px;
+            background: linear-gradient(135deg, #a58aff, #6855df);
+            box-shadow: 0 5px 13px #8067ff44;
+        }
+
+        .muted {
+            color: var(--muted);
+            font-size: 12px;
+            margin-bottom: 18px;
+            line-height: 1.7;
+        }
+
+        /* 6. INPUTS & FORM ELEMENTS */
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 13px 14px;
+            border: 1px solid #e2e0ef;
+            border-radius: 11px;
+            font-family: inherit;
+            font-size: 13px;
+            margin-bottom: 13px;
+            background: #fdfcff;
+            color: #34314f;
+            outline: none;
+            transition: .25s;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: #9b88ff;
+            box-shadow: 0 0 0 4px #8067ff18;
+            background: #fff;
+        }
+
+        input[type=file] {
+            border: 1.5px dashed #bcb0f4;
+            background: linear-gradient(110deg, #faf8ff, #f4fbff);
+            padding: 17px;
+            cursor: pointer;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 88px;
+            line-height: 1.65;
+        }
+
+        /* 7. BUTTONS */
+        button {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(110deg, #8067ff, #6251d8);
+            color: #fff;
+            border: 0;
+            border-radius: 11px;
+            padding: 12px 19px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: 750;
+            letter-spacing: .1px;
+            box-shadow: 0 7px 17px #7560df30;
+            transition: transform .22s, box-shadow .22s, filter .22s;
+        }
+
+        button:before {
+            content: '';
+            position: absolute;
+            top: -60%;
+            left: -80%;
+            width: 45%;
+            height: 220%;
+            transform: rotate(25deg);
+            background: #ffffff35;
+            transition: left .55s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 11px 25px #7560df55;
+            filter: saturate(1.12);
+        }
+
+        button:hover:before {
+            left: 140%;
+        }
+
+        button:disabled {
+            opacity: .5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        button.secondary {
+            background: #f1efff;
+            color: #6956ce;
+            border: 1px solid #e5dfff;
+            box-shadow: none;
+        }
+
+        button.secondary:hover {
+            background: #e9e4ff;
+        }
+
+        /* 8. PAPER LIBRARY */
+        .paper-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 15px;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            margin-bottom: 10px;
+            background: #fff;
+            transition: .22s;
+        }
+
+        .paper-item:hover {
+            border-color: #b9aaff;
+            background: #fcfbff;
+            transform: translateX(3px);
+        }
+
+        .paper-item input {
+            width: auto;
+            margin: 3px 0 0;
+            accent-color: #8067ff;
+        }
+
+        .paper-item label {
+            font-size: 12px;
+            line-height: 1.6;
+            cursor: pointer;
+            color: #42405e;
+            flex: 1;
+        }
+
+        .paper-item small {
+            display: block;
+            color: #9694ac;
+            margin-top: 4px;
+            font-size: 10px;
+        }
+
+        /* 9. BUTTON ROW & STATUS */
+        .button-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 13px;
+        }
+
+        .status {
+            margin-top: 12px;
+            font-size: 12px;
+            color: #6956ce;
+            min-height: 16px;
+        }
+
+        /* 10. RESULT SECTION */
+        .result {
+            margin-top: 20px;
+            padding: 21px;
+            background: linear-gradient(135deg, #fbfaff, #f7fbff);
+            border: 1px solid #e9e5fb;
+            border-radius: 14px;
+            min-height: 80px;
+        }
+
+        /* 11. AI RESPONSE / MARKDOWN */
+        .ai-response {
+            line-height: 1.85;
+            overflow-wrap: anywhere;
+            color: #50506b;
+            font-size: 13px;
+        }
+
+        .ai-response h1,
+        .ai-response h2,
+        .ai-response h3,
+        .ai-response h4 {
+            margin: 21px 0 10px;
+            color: #292447;
+            line-height: 1.4;
+        }
+
+        .ai-response h1 {
+            font-size: 23px;
+        }
+
+        .ai-response h2 {
+            font-size: 19px;
+        }
+
+        .ai-response h3 {
+            font-size: 16px;
+        }
+
+        .ai-response h4 {
+            font-size: 14px;
+        }
+
+        .ai-response p {
+            margin: 10px 0;
+        }
+
+        .ai-response ul,
+        .ai-response ol {
+            padding-left: 24px;
+            margin: 12px 0;
+        }
+
+        .ai-response li {
+            margin-bottom: 7px;
+        }
+
+        .ai-response strong {
+            color: #292447;
+        }
+
+        .ai-response blockquote {
+            border-left: 4px solid #8067ff;
+            padding: 11px 15px;
+            margin: 15px 0;
+            background: #f1eeff;
+            border-radius: 0 9px 9px 0;
+        }
+
+        .ai-response hr {
+            border: 0;
+            border-top: 1px solid #e4e2ef;
+            margin: 20px 0;
+        }
+
+        .ai-response table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            display: block;
+            overflow-x: auto;
+            font-size: 12px;
+        }
+
+        .ai-response th,
+        .ai-response td {
+            border: 1px solid #e2e0ef;
+            padding: 10px;
+            text-align: left;
+            min-width: 110px;
+        }
+
+        .ai-response th {
+            background: #efecff;
+            color: #5d4bc0;
+        }
+
+        .ai-response tr:nth-child(even) {
+            background: #faf9ff;
+        }
+
+        .ai-response pre {
+            background: #211e3d;
+            color: #f5f3ff;
+            padding: 15px;
+            border-radius: 10px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+
+        .ai-response code {
+            background: #efedfa;
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-size: 11px;
+        }
+
+        .ai-response pre code {
+            background: transparent;
+            padding: 0;
+            color: inherit;
+        }
+
+        /* 12. CHATBOT */
+        .chat-box {
+            height: 390px;
+            overflow-y: auto;
+            padding: 18px;
+            background: linear-gradient(145deg, #fbfaff, #f6faff);
+            border: 1px solid #e8e5f5;
+            border-radius: 14px;
+            margin-bottom: 15px;
+            scroll-behavior: smooth;
+        }
+
+        .chat-message {
+            padding: 13px 16px;
+            border-radius: 13px;
+            margin-bottom: 14px;
+            max-width: 90%;
+            line-height: 1.7;
+            font-size: 12px;
+            overflow-wrap: anywhere;
+            animation: rise .25s both;
+        }
+
+        .user-message {
+            background: linear-gradient(120deg, #8067ff, #6351d8);
+            color: #fff;
+            margin-left: auto;
+            white-space: pre-wrap;
+            border-bottom-right-radius: 4px;
+        }
+
+        .bot-message {
+            background: #eeebff;
+            color: #3e3a60;
+            margin-right: auto;
+            width: 95%;
+            border-bottom-left-radius: 4px;
+        }
+
+        .bot-message .ai-response {
+            color: #3e3a60;
+        }
+
+        /* 13. CHAT INPUT & SEND BUTTON */
+        .chat-input-row {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+        }
+
+        .chat-input-row textarea {
+            margin: 0;
+            min-height: 49px;
+            max-height: 180px;
+        }
+
+        .chat-input-row button {
+            min-height: 49px;
+            padding: 0 23px;
+        }
+
+        /* 14. FOOTER */
+        footer {
+            text-align: center;
+            padding: 27px 15px;
+            color: #9290a8;
+            font-size: 11px;
+            border-top: 1px solid var(--line);
+            background: #fff;
+        }
+
+        /* 15. ANIMATIONS */
+        @keyframes rise {
+            from {
+                opacity: 0;
+                transform: translateY(18px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes logoPulse {
+            0%, 100% {
+                transform: rotate(0) scale(1);
+                box-shadow: 0 7px 22px #7860e866;
+            }
+
+            50% {
+                transform: rotate(12deg) scale(1.07);
+                box-shadow: 0 9px 30px #39cddd77;
+            }
+        }
+
+        @keyframes orbit {
+            to {
+                transform: translateX(-50%) rotate(360deg);
+            }
+        }
+
+        @keyframes twinkle {
+            0%, 100% {
+                opacity: .28;
+                transform: translateY(0);
+            }
+
+            50% {
+                opacity: .72;
+                transform: translateY(-8px);
+            }
+        }
+
+        @keyframes barGlow {
+            0%, 100% {
+                filter: brightness(1);
+                width: 75px;
+            }
+
+            50% {
+                filter: brightness(1.5);
+                width: 112px;
+            }
+        }
+
+        /* 16. REDUCED MOTION */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *:before,
+            *:after {
+                animation: none !important;
+                scroll-behavior: auto !important;
+                transition: none !important;
+            }
+        }
+
+        /* 17. RESPONSIVE DESIGN — MOBILE */
+        @media (max-width: 650px) {
+            header {
+                height: 65px;
+                padding: 0 5%;
+            }
+
+            .logo {
+                font-size: 18px;
+                gap: 9px;
+            }
+
+            .logo:before {
+                width: 34px;
+                height: 34px;
+            }
+
+            .hero {
+                padding: 68px 18px 62px;
+            }
+
+            .hero h1 {
+                font-size: 34px;
+                letter-spacing: -1.5px;
+            }
+
+            .hero p {
+                font-size: 12px;
+            }
+
+            .container {
+                width: 92%;
+                padding-bottom: 45px;
+            }
+
+            .card {
+                padding: 20px 17px;
+                margin: 17px 0;
+                border-radius: 15px;
+            }
+
+            .card h2 {
+                font-size: 16px;
+            }
+
+            .button-row {
+                gap: 7px;
+            }
+
+            .button-row button {
+                flex: 1;
+            }
+
+            .chat-box {
+                height: 340px;
+                padding: 12px;
+            }
+
+            .chat-input-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .chat-input-row button {
+                width: 100%;
+            }
+
+            .chat-message {
+                max-width: 96%;
+            }
+
+            .result {
+                padding: 15px;
+            }
+
+            header > div:last-child {
+                font-size: 9px;
+                padding: 6px 9px;
+            }
+        }
+
+    </style>
+
+    <!-- Markdown renderer and HTML sanitizer -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js"></script>
+</head>
+
+<body>
+
+<header>
+    <div class="logo"  aria-label="Research Mind home">Research <span>Mind.</span></div>
+    <nav class="main-nav" aria-label="Main navigation">
+        <a href="#upload-section">Upload</a>
+        <a href="#library-section">Library</a>
+        <a href="#summary-section">Summary</a>
+        <a href="#compare-section">Compare</a>
+        <a href="#chat-section">AI Chat</a>
+    </nav>
+    <div class="header-tag">AI Research Assistant</div>
+</header>
+
+<section class="hero" id="home">
+    <h1>Your Research, Simplified.</h1>
+    <p>Upload research papers, generate summaries, compare studies and ask questions using AI.</p>
+</section>
+
+<main class="container">
+
+    <!-- PDF UPLOAD -->
+    <section class="card" id="upload-section">
+        <h2>1. Upload Research Papers</h2>
+        <p class="muted">Upload one or multiple PDF research papers.</p>
+
+        <input type="file" id="pdfFile" accept=".pdf,application/pdf" multiple aria-label="Choose multiple PDF research papers">
+        <p class="status" id="fileSelectionStatus" aria-live="polite">You can select multiple PDF files at once.</p>
+
+        <button id="uploadButton" onclick="uploadPapers()">Upload Papers</button>
+
+        <p class="status" id="uploadStatus"></p>
+    </section>
+
+    <!-- PAPER LIBRARY -->
+    <section class="card" id="library-section">
+        <h2>2. Your Research Library</h2>
+        <p class="muted">Select papers to use for comparison and chatbot questions.</p>
+
+        <div class="button-row">
+            <button class="secondary" onclick="loadPapers()">Refresh Papers</button>
+            <button class="secondary" onclick="selectAllPapers(true)">Select All</button>
+            <button class="secondary" onclick="selectAllPapers(false)">Deselect All</button>
+        </div>
+
+        <div id="paperList" style="margin-top:18px;">
+            No papers uploaded yet.
+        </div>
+
+        <p class="muted" id="paperCount"></p>
+    </section>
+
+    <!-- SUMMARY -->
+    <section class="card" id="summary-section">
+        <h2>3. Generate Research Summary</h2>
+        <p class="muted">Choose a paper and topic to generate an AI-powered summary.</p>
+
+        <label for="paperSelect">Select Research Paper</label>
+        <select id="paperSelect">
+            <option value="">Select a paper</option>
+        </select>
+
+        <label for="topicSelect">Select Topic</label>
+        <select id="topicSelect">
+            <option value="">Select a topic</option>
+        </select>
+
+        <button id="summaryButton" onclick="generateSummary()">Generate Summary</button>
+
+        <div class="result">
+            <div id="summaryContent" class="ai-response">
+                Your generated summary will appear here.
+            </div>
+        </div>
+    </section>
+
+    <!-- COMPARE -->
+    <section class="card" id="compare-section">
+        <h2>4. Compare Research Papers</h2>
+        <p class="muted">Select at least two papers in your Research Library to compare them.</p>
+
+        <button id="compareButton" onclick="comparePapers()">Compare Selected Papers</button>
+
+        <div class="result">
+            <div id="comparisonContent" class="ai-response">
+                Your paper comparison will appear here.
+            </div>
+        </div>
+    </section>
+
+    <!-- CHATBOT -->
+    <section class="card" id="chat-section">
+        <h2>5. Ask Research Mind</h2>
+        <p class="muted">Ask questions about your uploaded research papers. Select papers above to restrict the chatbot to those papers. If none are selected, all papers will be used.</p>
+
+        <div class="chat-box" id="chatBox">
+            <div class="chat-message bot-message">
+                Hello! I am Research Mind. Ask me anything about your uploaded research papers.
+            </div>
+        </div>
+
+        <div class="chat-input-row">
+            <textarea id="chatInput" placeholder="Ask a question about your research papers..."></textarea>
+            <button id="sendButton" onclick="sendMessage()">Send</button>
+        </div>
+    </section>
+
+</main>
+
+<footer>
+    Research Mind | AI-Powered Research Assistant
+</footer>
+
+
+    <script>
+let papers = [];
+
+    // COMMON MARKDOWN RENDERER FOR SUMMARY, COMPARE AND CHATBOT
+    function renderMarkdown(content) {
+        if (!content) return "";
+
+        const html = marked.parse(String(content), {
+            gfm: true,
+            breaks: true
+        });
+
+        return DOMPurify.sanitize(html);
+    }
+
+    // GET SELECTED PAPER IDS
+    function getSelectedPaperIds() {
+        return Array.from(
+            document.querySelectorAll(".paper-checkbox:checked")
+        ).map(checkbox => checkbox.value);
+    }
+
+    // UPLOAD PAPERS
+    async function uploadPapers() {
+        const fileInput = document.getElementById("pdfFile");
+        const files = fileInput.files;
+        const status = document.getElementById("uploadStatus");
+        const button = document.getElementById("uploadButton");
+
+        if (!files.length) {
+            status.textContent = "Please select at least one PDF.";
+            return;
+        }
+
+        const formData = new FormData();
+
+        for (const file of files) {
+            formData.append("files", file);
+        }
+
+        button.disabled = true;
+        status.textContent = "Uploading and processing papers...";
+
+        try {
+            const response = await fetch("/upload", {
+                method: "POST",
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || "Upload failed.");
+            }
+
+            status.textContent = data.message || "Upload completed successfully.";
+
+            fileInput.value = "";
+            await loadPapers();
+
+        } catch (error) {
+            status.textContent = "Error: " + error.message;
+        } finally {
+            button.disabled = false;
+        }
+    }
+
+    // LOAD PAPERS
+    async function loadPapers() {
+        const paperList = document.getElementById("paperList");
+        const paperSelect = document.getElementById("paperSelect");
+
+        try {
+            const response = await fetch("/papers");
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || "Could not load papers.");
+            }
+
+            papers = data.papers || [];
+
+            paperList.innerHTML = "";
+            paperSelect.innerHTML = '<option value="">Select a paper</option>';
+
+            if (papers.length === 0) {
+                paperList.textContent = "No papers uploaded yet.";
+            }
+
+            papers.forEach(paper => {
+                const item = document.createElement("div");
+                item.className = "paper-item";
+
+                const checkbox = document.createElement("input");
+                checkbox.type = "checkbox";
+                checkbox.className = "paper-checkbox";
+                checkbox.value = paper.id;
+                checkbox.id = "paper-" + paper.id;
+
+                const label = document.createElement("label");
+                label.htmlFor = checkbox.id;
+
+                const name = document.createElement("strong");
+                name.textContent = paper.filename || "Research Paper";
+
+                const topics = document.createElement("small");
+                topics.textContent = "Topics: " +
+                    (paper.topics || []).map(topic =>
+                        typeof topic === "string" ? topic : topic.title || topic.name || ""
+                    ).filter(Boolean).join(", ");
+
+                label.appendChild(name);
+                label.appendChild(topics);
+
+                item.appendChild(checkbox);
+                item.appendChild(label);
+                paperList.appendChild(item);
+
+                const option = document.createElement("option");
+                option.value = paper.id;
+                option.textContent = paper.filename || "Research Paper";
+                paperSelect.appendChild(option);
+            });
+
+            document.getElementById("paperCount").textContent =
+                papers.length + " paper(s) uploaded.";
+
+            updateTopics();
+
+        } catch (error) {
+            paperList.textContent = "Error loading papers: " + error.message;
+        }
+    }
+
+    // SELECT ALL OR DESELECT ALL
+    function selectAllPapers(checked) {
+        document.querySelectorAll(".paper-checkbox").forEach(checkbox => {
+            checkbox.checked = checked;
+        });
+    }
+
+    // UPDATE TOPICS WHEN PAPER CHANGES
+    function updateTopics() {
+        const paperId = document.getElementById("paperSelect").value;
+        const topicSelect = document.getElementById("topicSelect");
+
+        topicSelect.innerHTML = '<option value="">Select a topic</option>';
+
+        const selectedPaper = papers.find(
+            paper => String(paper.id) === String(paperId)
+        );
+
+        if (!selectedPaper) return;
+
+        (selectedPaper.topics || []).forEach(topic => {
+            const topicValue = typeof topic === "string"
+                ? topic
+                : topic.title || topic.name || "";
+
+            if (!topicValue) return;
+
+            const option = document.createElement("option");
+            option.value = topicValue;
+            option.textContent = topicValue;
+            topicSelect.appendChild(option);
+        });
+    }
+
+    document.getElementById("paperSelect").addEventListener(
+        "change", updateTopics
+    );
+
+    // GENERATE SUMMARY
+    async function generateSummary() {
+        const paperId = document.getElementById("paperSelect").value;
+        const topic = document.getElementById("topicSelect").value;
+        const output = document.getElementById("summaryContent");
+        const button = document.getElementById("summaryButton");
+
+        if (!paperId || !topic) {
+            output.textContent = "Please select a paper and topic.";
+            return;
+        }
+
+        button.disabled = true;
+        output.textContent = "Generating summary...";
+
+        try {
+            const response = await fetch("/summary", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    paper_id: paperId,
+                    topic: topic
+                })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || "Summary generation failed.");
+            }
+
+            output.innerHTML = renderMarkdown(data.summary);
+
+        } catch (error) {
+            output.textContent = "Error: " + error.message;
+        } finally {
+            button.disabled = false;
+        }
+    }
+
+    // COMPARE PAPERS
+    async function comparePapers() {
+        const paperIds = getSelectedPaperIds();
+        const output = document.getElementById("comparisonContent");
+        const button = document.getElementById("compareButton");
+
+        if (paperIds.length < 2) {
+            output.textContent = "Please select at least two papers to compare.";
+            return;
+        }
+
+        button.disabled = true;
+        output.textContent = "Comparing research papers...";
+
+        try {
+            const response = await fetch("/compare", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    paper_ids: paperIds
+                })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || "Comparison failed.");
+            }
+
+            output.innerHTML = renderMarkdown(data.comparison);
+
+        } catch (error) {
+            output.textContent = "Error: " + error.message;
+        } finally {
+            button.disabled = false;
+        }
+    }
+
+    // ADD CHAT MESSAGE
+    function addChatMessage(content, type, isMarkdown = false) {
+        const chatBox = document.getElementById("chatBox");
+
+        const message = document.createElement("div");
+        message.className = "chat-message " +
+            (type === "user" ? "user-message" : "bot-message");
+
+        if (isMarkdown) {
+            const responseContent = document.createElement("div");
+            responseContent.className = "ai-response";
+            responseContent.innerHTML = renderMarkdown(content);
+            message.appendChild(responseContent);
+        } else {
+            message.textContent = content;
+        }
+
+        chatBox.appendChild(message);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    // CHATBOT
+    async function sendMessage() {
+        const input = document.getElementById("chatInput");
+        const button = document.getElementById("sendButton");
+        const message = input.value.trim();
+
+        if (!message) return;
+
+        addChatMessage(message, "user");
+        input.value = "";
+
+        button.disabled = true;
+
+        const loadingMessage = document.createElement("div");
+        loadingMessage.className = "chat-message bot-message";
+        loadingMessage.textContent = "Research Mind is thinking...";
+        document.getElementById("chatBox").appendChild(loadingMessage);
+
+        try {
+            const response = await fetch("/chat", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    message: message,
+                    paper_ids: getSelectedPaperIds()
+                })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || "Chat request failed.");
+            }
+
+            loadingMessage.remove();
+
+            addChatMessage(
+                data.response || "No response received.",
+                "bot",
+                true
+            );
+
+        } catch (error) {
+            loadingMessage.textContent = "Error: " + error.message;
+        } finally {
+            button.disabled = false;
+            input.focus();
+        }
+    }
+
+    // SEND CHAT MESSAGE WITH ENTER
+    document.getElementById("chatInput").addEventListener("keydown", function(event) {
+        if (event.key === "Enter" && !event.shiftKey) {
+            event.preventDefault();
+            sendMessage();
+        }
+    });
+
+    // SHOW HOW MANY PDF FILES HAVE BEEN SELECTED
+    document.getElementById("pdfFile").addEventListener("change", function() {
+        const status = document.getElementById("fileSelectionStatus");
+        const count = this.files ? this.files.length : 0;
+        status.textContent = count === 0
+            ? "You can select multiple PDF files at once."
+            : count + " PDF file(s) selected and ready to upload.";
+    });
+
+    // INITIAL LOAD
+    document.addEventListener("DOMContentLoaded", loadPapers);
+    </script>
+
+
+</body>
+</html>
