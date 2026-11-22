@@ -23,6 +23,15 @@ The platform helps students and researchers understand complex academic papers, 
 - **Frontend:** HTML, CSS, JavaScript
 - **Document Processing:** PDF text extraction and processing
 
+## 🖥️ Application Screenshots
+
+### Homepage
+![Research Mind Homepage](static/researchmind-home.png)
+
+### Full Website Preview
+![Research Mind Full Website](static/researchmind-full.png)
+
+
 ## ⚙️ Installation and Setup
 
 ### 1. Clone the Repository
